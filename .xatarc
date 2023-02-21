@@ -1,0 +1,6 @@
+{
+  "databaseURL": "https://Blocverse-ext-b2u95r.us-east-1.xata.sh/db/artizen",
+  "codegen": {
+    "output": "xata/index.ts"
+  }
+}
