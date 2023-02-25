@@ -1,63 +1,90 @@
-import { DisplayImageContent } from "@/components/Explore/displayImageContent";
+import { PreviewContent } from "@/components/Explore/previewContent";
 import { FetchedContentRecord } from "@/lib/types";
-import { getXataClient } from "@/xata";
 import Head from "next/head";
 import { NextPageWithLayout } from "./_app";
 import AppLayout from "@/layouts/AppLayout";
-import { GetServerSidePropsContext } from "next";
 import Search from "@/layouts/search";
+import { MasonryLayout } from "@/components/Explore/masonryLayout";
+import { useState } from "react";
+import axios from "axios";
+import useSWR, { Fetcher } from "swr";
+import { useRouter } from "next/router";
 
-interface Props {
-  content: FetchedContentRecord[];
+const fetcher: Fetcher<FetchedContentRecord[]> = async (url: string) => {
+  const { data } = await axios.get(url);
+  return data;
+};
+
+const ContentPage = ({
+  index,
+  search,
+  newLimit,
+  isLast,
+}: {
+  index?: number;
   search?: string;
+  newLimit: () => void;
+  isLast: boolean;
+}) => {
+  const { data, error, isLoading } = useSWR<FetchedContentRecord[]>(
+    `/api/explore?page=${index}` + (search ? `&search=${search}` : ``),
+    fetcher
+  );
+  if (error) return <div>failed to load</div>;
+  if (isLoading || !data) return <></>;
+  return (
+    <>
+      {data.map((item: FetchedContentRecord, i) => (
+        <PreviewContent
+          isLast={i === data.length - 1 && isLast}
+          newLimit={newLimit}
+          key={item.id}
+          content={item}
+        />
+      ))}
+    </>
+  );
+};
+
+interface ExplorePageQuery {
+  search?: string;
+  page?: number;
 }
 
-const ExplorePage: NextPageWithLayout<Props> = ({ content, search }: Props) => {
+const ExplorePage: NextPageWithLayout = () => {
+  const { query } = useRouter();
+  const { search, page: pageQuery }: ExplorePageQuery = query;
+  const [page, setPage] = useState(pageQuery || 1);
+  const newLimit = () => setPage((prev) => prev + 1);
+  const pages = [];
+  for (let i = 1; i <= page; i++) {
+    pages.push(
+      <ContentPage
+        index={i}
+        newLimit={newLimit}
+        isLast={i === page}
+        key={i}
+        search={search as string}
+      />
+    );
+  }
   return (
     <>
       <Head>
         <title>Explore photos, videos</title>
       </Head>
-      <main>
-        <h3 className="font-bold hero-text-2 text-[40px] leading-[60.24px] mb-8">
-          Explore community curated content
-        </h3>
-        <Search center={false} defaultValue={search} />
-        {search && (
-          <p className="text-white text-xl mt-8 mb-8">
-            Search results for: {search}
-          </p>
-        )}
-        <div className="grid gap-6 mt-8 lg:grid-cols-3">
-          {content.map((content) => (
-            <DisplayImageContent content={content} key={content.rootCid} />
-          ))}
+      <main className="space-y-14">
+        <div className="space-y-8">
+          <h3 className="font-bold hero-text-2 text-[40px] leading-[60.24px] w-fit mx-auto">
+            Explore community curated content
+          </h3>
+          <Search center={true} defaultValue={search} />
         </div>
+        <MasonryLayout>{pages}</MasonryLayout>
       </main>
     </>
   );
 };
-
-export async function getServerSideProps(context: GetServerSidePropsContext) {
-  const { query } = context;
-  const search = query.search;
-  const xata = getXataClient();
-  let content;
-  if (search) {
-    content = await xata.db.content.search(search as string, {
-      target: ["description"],
-    });
-  } else {
-    content = await xata.db.content.getAll();
-  }
-
-  return {
-    props: {
-      content: JSON.parse(JSON.stringify(content)),
-      search: search ? search : null,
-    },
-  };
-}
 
 ExplorePage.getLayout = (page) => <AppLayout>{page}</AppLayout>;
 

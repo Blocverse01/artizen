@@ -44,7 +44,7 @@ export default function Search({
         <input
           name="search"
           aria-label="We are strong"
-          className="border-none w-full bg-transparent text-white outline-none placeholder-[#5B5B69]"
+          className="border-none w-full bg-transparent text-white outline-none placeholder-[#5B5B69] mr-5"
           type="search"
           onChange={handleChange}
           value={search}
@@ -57,6 +57,11 @@ export default function Search({
           <SearchIcon /> {""}
         </button>
       </form>
+      {defaultValue && (
+        <p className="text-white mt-5 text-xl">
+          Search results for: {defaultValue}
+        </p>
+      )}
     </section>
   );
 }
