@@ -15,6 +15,15 @@ const tables = [
       { name: "createdAt", type: "datetime" },
       { name: "description", type: "text" },
       { name: "preview_url", type: "string" },
+      { name: "encrypted_url", type: "string" },
+      {
+        name: "dimension",
+        type: "object",
+        columns: [
+          { name: "width", type: "int" },
+          { name: "height", type: "int" },
+        ],
+      },
     ],
   },
 ] as const;
