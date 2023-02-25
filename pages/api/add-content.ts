@@ -1,9 +1,12 @@
+import { Dimension } from "@/lib/types";
 import { getXataClient } from "@/xata";
 import { NextApiRequest, NextApiResponse } from "next";
 
 type UploadedContent = {
   cid: string;
   preview_url: string;
+  encrypted_url: string;
+  dimension?: Dimension;
 };
 
 interface RequestBody {
@@ -31,6 +34,8 @@ export default async function handler(
         ownerAddress,
         createdAt: new Date().toISOString(),
         preview_url: item.preview_url,
+        encrypted_url: item.encrypted_url,
+        dimension: item.dimension || null,
       }))
     );
     res.status(201).json(data);

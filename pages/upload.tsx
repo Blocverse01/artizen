@@ -20,19 +20,24 @@ const Upload: NextPageWithLayout = () => {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!photos || photos.length === 0) return;
-    setProcessing(true);
-    const uploadedPhotos = await uploadPhotos(photos);
-    if (uploadedPhotos && uploadedPhotos.length > 0) {
-      const { data, status } = await axios.post("/api/add-content", {
-        content: uploadedPhotos,
-        ownerAddress: "0xEE02ceB76052f7D6Ac9478D9201f2BB94c79fc5c",
-      }); // add content to database
-      console.log(data);
-      setProcessing(false);
-      if (status === 201) {
-        alert("Success");
-        Router.push("/explore");
+    try {
+      setProcessing(true);
+      const uploadedPhotos = await uploadPhotos(photos);
+      if (uploadedPhotos && uploadedPhotos.length > 0) {
+        const { data, status } = await axios.post("/api/add-content", {
+          content: uploadedPhotos,
+          ownerAddress: "0xEE02ceB76052f7D6Ac9478D9201f2BB94c79fc5c",
+        }); // add content to database
+        console.log(data);
+        if (status === 201) {
+          alert("Success");
+          Router.push("/explore");
+        }
       }
+    } catch (error: any) {
+      console.log(error);
+    } finally {
+      setProcessing(false);
     }
   };
 
@@ -92,7 +97,10 @@ const Upload: NextPageWithLayout = () => {
             className="bg-app-light py-3 flex items-center px-5 text-app-dark text-lg font-medium text-center rounded-lg"
           >
             {processing ? (
-              <ScaleLoader color="#0B0B0F" className="ml-2 scale-90" />
+              <>
+                {"Uploading"}
+                <ScaleLoader color="#0B0B0F" className="ml-2 scale-90" />
+              </>
             ) : (
               "Submit"
             )}
