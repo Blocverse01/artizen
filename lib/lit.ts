@@ -6,27 +6,6 @@ const client = new LitJsSdk.LitNodeClient({
 });
 const chain = "polygon";
 
-/**
- * Access control for a wallet with > 0.00001 ETH
- * const accessControlConditionsETHBalance = [
-  {
-    contractAddress: '',
-    standardContractType: '',
-    chain,
-    method: 'eth_getBalance',
-    parameters: [
-      ':userAddress',
-      'latest'
-    ],
-    returnValueTest: {
-      comparator: '>=',
-      value: '10000000000000'
-    }
-  }
-]
- */
-
-// Must hold at least one Monster Suit NFT (https://opensea.io/collection/monster-suit)
 const accessControlConditionsToken = [
   {
     contractAddress: "0x923aEC84D20799cF57E7f12C15C893FDDaf37e2e",
