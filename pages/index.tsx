@@ -38,26 +38,26 @@ const Home: NextPageWithLayout = () => {
               Now in Private Beta
             </h3>
           </div>
-          <h3 className="font-bold hero-text-2 max-w-[882.78px] text-center text-[64.54px] leading-[60.24px] lg:h-[160px] mt-[30px] mx-auto">
+          <h3 className="font-bold hero-text-2 max-w-[882.78px] text-center lg:text-[54px] xl:text-[64.54px] leading-[60.24px] lg:h-[160px] mt-[30px] mx-auto">
             {"From inspiration to execution, we’ve got you covered."}
           </h3>
           <p className="text-white max-w-[504px] text-center text-xl mx-auto">
             {
               "Collaborate, share, and monetize your work. With everything you need in one place, it’s time to create your best work "
             }
-            <span className="hero-sub-text-gradient font-bold">yet.</span>
+            <span className="font-bold hero-sub-text-gradient">yet.</span>
           </p>
         </section>
         <Search />
         <section className="flex items-center text-[#606060] justify-between">
-          <ul className="uppercase flex font-bold flex-1 items-center justify-center">
+          <ul className="flex items-center justify-center flex-1 font-bold uppercase">
             <li className="pr-2">Twitter</li>
             <li className="pl-2 border-l border-[#606060]">Linkedin</li>
           </ul>
           <div className="relative flex-1 h-[443px] w-[567px]">
             <Image src={footerSprite.src} fill alt="footer image" />
           </div>
-          <ul className="uppercase font-bold flex-1 flex items-center justify-center">
+          <ul className="flex items-center justify-center flex-1 font-bold uppercase">
             <li>privacy policy</li>
           </ul>
         </section>
