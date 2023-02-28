@@ -1,6 +1,8 @@
 import Image from "next/image";
 import logo from "@/images/logo.svg";
 import Link from "next/link";
+//import { ConnectKitButton } from "connectkit";
+import { ConnectButton } from "@rainbow-me/rainbowkit";
 
 export default function Header() {
   return (
@@ -13,7 +15,9 @@ export default function Header() {
           <li className="mr-8">
             <Link href={"/explore"}>Explore</Link>
           </li>
-          <li className="mr-8">Sign Up</li>
+          <li className="mr-8">
+            <ConnectButton />
+          </li>
           <li className="pl-8 border-l border-white">
             <Link
               href="/upload"

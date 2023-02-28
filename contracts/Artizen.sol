@@ -136,7 +136,7 @@ contract Artizen is IEncryptionClient, ReentrancyGuard, PullPayment {
         uint256 cipherId,
         G1Point calldata buyerPublicKey,
         LicenseType licenseType
-    ) external payable nonReentrant {
+    ) external payable nonReentrant returns (uint256) {
         Content memory content = contributions[cipherId];
 
         if (content.contributor == address(0)) {
@@ -168,6 +168,7 @@ contract Artizen is IEncryptionClient, ReentrancyGuard, PullPayment {
         );
 
         emit LicenseBought(msg.sender, cipherId, licenseType, price, requestId);
+        return requestId;
     }
 
     /// @inheritdoc IEncryptionClient

@@ -24,6 +24,7 @@ const tables = [
           { name: "height", type: "int" },
         ],
       },
+      { name: "cipherId", type: "int" },
     ],
   },
 ] as const;
