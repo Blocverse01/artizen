@@ -109,11 +109,13 @@ const ExplorePage: NextPageWithLayout = () => {
       {selectedContent && (
         <ContentModal
           content={selectedContent}
-          license={licenses.find(
-            (license) =>
-              license.licensee === address &&
-              license.contentId.eq(BigNumber.from(selectedContent.cipherId!))
-          )}
+          license={
+            licenses.find(
+              (license) =>
+                license.licensee === address &&
+                license.contentId.eq(BigNumber.from(selectedContent.cipherId!))
+            ) || null
+          }
         />
       )}
     </>
