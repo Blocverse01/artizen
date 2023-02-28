@@ -2,30 +2,31 @@ import axios from "axios";
 import Image from "next/image";
 import Router from "next/router";
 import { useState } from "react";
-import { ScaleLoader } from "react-spinners";
 import { NextPageWithLayout } from "./_app";
 import AppLayout from "@/layouts/AppLayout";
 import useGlobalStore from "@/store/globalStore";
 import watermark from "@/lib/watermarkPhoto";
-import { config } from "@/lib/constants";
+import { config, styledToast } from "@/lib/constants";
 import { Base64 } from "js-base64";
 import { nanoid } from "nanoid";
 import { AddContentRequestBody, Dimension } from "@/lib/types";
 import storage from "@/lib/storage";
 import { useAccount, useSigner } from "wagmi";
 import { Artizen__factory } from "@/typechain";
-import SignIn from "@/components/Medusa/signIn";
 import { BigNumber } from "ethers";
+import { toast } from "react-hot-toast";
+import useMedusaAuth from "@/hooks/useMedusaAuth";
 
 const Upload: NextPageWithLayout = () => {
   const [photo, setPhoto] = useState<File>();
   const [description, setDescription] = useState("");
   const [fileText, setFileText] = useState<string>("");
   const [processing, setProcessing] = useState(false);
-  const { address } = useAccount();
+  const { address, isConnected } = useAccount();
   const { data: signer } = useSigner();
+  const { signMessage } = useMedusaAuth();
 
-  const medusa = useGlobalStore((state) => state.medusa);
+  const stateMedusa = useGlobalStore((state) => state.medusa);
 
   const handleDescriptionChange = (
     e: React.ChangeEvent<HTMLTextAreaElement>
@@ -53,12 +54,38 @@ const Upload: NextPageWithLayout = () => {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (!signer)
-      return alert("Please connect your wallet to contribute content");
-    if (!medusa) return alert("Click the Sign in button");
-    if (!photo || !medusa) return alert("Add a photo");
+    let medusa = stateMedusa;
+    const toastId = "add-content";
+
+    if (!photo) {
+      return toast("Add a photo", {
+        icon: "🔔",
+        ...styledToast,
+        id: toastId,
+      });
+    }
+
+    if (!isConnected || !signer)
+      return toast("Connect your wallet", {
+        icon: "🔔",
+        ...styledToast,
+        id: toastId,
+      });
+
+    if (!medusa) {
+      toast.loading("Authorizing medusa", {
+        ...styledToast,
+        id: toastId,
+      });
+      medusa = (await signMessage())!;
+    }
+
     try {
       setProcessing(true);
+      toast.loading("Encrypting", {
+        ...styledToast,
+        id: toastId,
+      });
       const buff = new TextEncoder().encode(fileText);
       const { encryptedData, encryptedKey } = await medusa.encrypt(
         buff,
@@ -72,6 +99,10 @@ const Upload: NextPageWithLayout = () => {
             width: img.width,
             height: img.height,
           };
+          toast.loading("Uploading", {
+            ...styledToast,
+            id: toastId,
+          });
           const filename = nanoid();
           const ext = photo.type.split("/")[1];
           const previewPath = `artizen_${filename}_preview.${ext}`;
@@ -89,10 +120,18 @@ const Upload: NextPageWithLayout = () => {
             config.appContractAddress,
             signer
           );
+          toast.loading("Listing your content", {
+            ...styledToast,
+            id: toastId,
+          });
           const transaction = await artizenContract.contribute(
             encryptedKey,
             uploaded.encrypted_url
           );
+          toast.loading("Waiting on FVM", {
+            ...styledToast,
+            id: toastId,
+          });
           const receipt = await transaction.wait();
           const cipherID = receipt?.events![1]?.args!.contentId as BigNumber;
           const { data, status } = await axios.post("/api/add-content", {
@@ -107,7 +146,10 @@ const Upload: NextPageWithLayout = () => {
           console.log(data);
           setProcessing(false);
           if (status === 201) {
-            alert("Success");
+            toast.success("Content Listed successfully", {
+              ...styledToast,
+              id: toastId,
+            });
             Router.push("/explore");
           }
         } catch (error) {
@@ -173,23 +215,13 @@ const Upload: NextPageWithLayout = () => {
           ></textarea>
         </div>
         <div className="flex justify-end mt-6">
-          {!medusa && <SignIn />}
-          {medusa && (
-            <button
-              disabled={processing}
-              type="submit"
-              className="bg-app-light py-3 flex items-center px-5 text-app-dark text-lg font-medium text-center rounded-lg"
-            >
-              {processing ? (
-                <>
-                  {"Uploading"}
-                  <ScaleLoader color="#0B0B0F" className="ml-2 scale-90" />
-                </>
-              ) : (
-                "Submit"
-              )}
-            </button>
-          )}
+          <button
+            disabled={processing}
+            type="submit"
+            className="bg-app-light disabled:bg-app-alt-dark py-3 flex items-center px-5 text-app-dark text-lg font-medium text-center rounded-lg"
+          >
+            Submit
+          </button>
         </div>
       </form>
     </main>
