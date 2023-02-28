@@ -64,17 +64,14 @@ const UnlockedContentDownload: React.FC<UnlockedContent> = ({
   return (
     <>
       {downloadLink === null && (
-        <button
-          onClick={prepareDownload}
-          className="btn text-sm lg:text-base btn-primary"
-        >
+        <button onClick={prepareDownload} className="btn btn-primary">
           Get Download Link
         </button>
       )}
       {downloadLink && (
         <a
           href={downloadLink}
-          className="btn bg-app-light text-sm lg:text-base border-app-dark"
+          className="btn bg-app-light border-app-dark"
           download={`artizen-${content.cipherId}`}
         >
           Download Premium
