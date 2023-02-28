@@ -8,7 +8,7 @@ import useMedusaAuth from "@/hooks/useMedusaAuth";
 import { Artizen__factory } from "@/typechain";
 import { G1PointStruct, LicenseBoughtEventObject } from "@/typechain/Artizen";
 import { BigNumber, ethers } from "ethers";
-import UnlockedContentDownload from "./UnlockedDownload";
+import UnlockedContentDownload from "./unlockedDownload";
 
 interface ContentModalProps {
   content: FetchedContentRecord;
