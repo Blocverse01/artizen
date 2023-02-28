@@ -10,24 +10,20 @@ const Web3Provider = ({ children }: { children: React.ReactNode }) => {
     [hyperspace],
     [
       alchemyProvider({ apiKey: process.env.NEXT_PUBLIC_ALCHEMY_ID! }),
-      jsonRpcProvider({
-        rpc: (chain: Chain) => ({
-          http: chain.rpcUrls.public.http[0],
-        }),
-      }),
-      (chain: Chain) => ({
-        chain,
-        provider: () =>
-          new JsonRpcProvider(
-            {
-              url: chain.rpcUrls.public.http[0],
-              headers: {
-                Authorization: `Bearer ${process.env.NEXT_PUBLIC_GLIF_RPC_AUTH_TOKEN}`,
+      (chain: Chain) =>
+        ({
+          chain,
+          provider: () =>
+            new JsonRpcProvider(
+              {
+                url: chain.rpcUrls.private.http[0],
+                headers: {
+                  Authorization: `Bearer ${process.env.NEXT_PUBLIC_GLIF_RPC_AUTH_TOKEN}`,
+                },
               },
-            },
-            { chainId: chain.id, name: chain.network }
-          ),
-      }),
+              { chainId: chain.id, name: chain.network }
+            ),
+        } as any),
     ],
     {
       pollingInterval: 5_000,

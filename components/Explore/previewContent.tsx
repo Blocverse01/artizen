@@ -8,9 +8,15 @@ type PreviewContentProps = {
   content: FetchedContentRecord;
   isLast: boolean;
   newLimit: () => void;
+  onClick: () => void;
 };
 
-const PreviewContent = ({ content, isLast, newLimit }: PreviewContentProps) => {
+const PreviewContent = ({
+  content,
+  isLast,
+  newLimit,
+  onClick,
+}: PreviewContentProps) => {
   const previewUrl = content.preview_url!;
   const imageExtensions = ["jpg", "jpeg", "png", "gif", "webp"];
   const extFromUrl = previewUrl.split(".").pop();
@@ -23,15 +29,18 @@ const PreviewContent = ({ content, isLast, newLimit }: PreviewContentProps) => {
   return (
     <>
       {isImage && (
-        <Image
-          ref={ref}
-          src={`/api/imageProxy?imageUrl=${previewUrl}`}
-          className="rounded-lg image-full"
-          alt={"photo"}
-          height={height!}
-          width={width!}
-          blurDataURL={BlurImage}
-        />
+        <label htmlFor="content-modal" className="block cursor-pointer" onClick={onClick}>
+          <Image
+            ref={ref}
+            src={`/api/imageProxy?imageUrl=${previewUrl}`}
+            className="rounded-lg image-full"
+            alt={"photo"}
+            height={height!}
+            width={width!}
+            blurDataURL={BlurImage}
+          />
+          {""}
+        </label>
       )}
     </>
   );

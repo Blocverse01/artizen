@@ -5,6 +5,7 @@ import type { AppProps } from "next/app";
 import { ReactElement, ReactNode } from "react";
 import Web3Provider from "@/components/web3Provider";
 import "@rainbow-me/rainbowkit/styles.css";
+import { Toaster } from "react-hot-toast";
 
 export type NextPageWithLayout<P = {}, IP = P> = NextPage<P, IP> & {
   getLayout?: (page: ReactElement) => ReactNode;
@@ -18,6 +19,7 @@ export default function App({ Component, pageProps }: AppPropsWithLayout) {
   const getLayout = Component.getLayout ?? ((page) => page);
   return (
     <Web3Provider>
+      <Toaster position="top-right" />
       {getLayout(
         <div className={`${SFPro.variable} font-sf-pro`}>
           <Component {...pageProps} />

@@ -3,7 +3,6 @@ pragma solidity ^0.8.19;
 
 import {PullPayment} from "@openzeppelin/contracts/security/PullPayment.sol";
 import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
-import "@openzeppelin/contracts/utils/Counters.sol";
 
 struct G1Point {
     uint256 x;
@@ -83,7 +82,7 @@ contract Artizen is IEncryptionClient, ReentrancyGuard, PullPayment {
 
     uint256 BASIC_LICENSE_FEE = 0.01 ether;
     uint256 PREMIUM_LICENSE_FEE = 0.1 ether;
-    uint256 CONTRIBUTORS_SHARE = 70 * 10**16; // 70%
+    uint256 CONTRIBUTORS_SHARE = 70;
 
     mapping(uint256 => Content) public contributions;
     address[] public contributors;
@@ -155,8 +154,7 @@ contract Artizen is IEncryptionClient, ReentrancyGuard, PullPayment {
         if (msg.value < price) {
             revert InsufficentFunds();
         }
-
-        uint256 contributorShare = (price * CONTRIBUTORS_SHARE) / 10**18;
+        uint256 contributorShare = calculateShare(CONTRIBUTORS_SHARE, price);
         uint256 platformShare = price - contributorShare;
 
         _asyncTransfer(content.contributor, contributorShare);
@@ -169,6 +167,14 @@ contract Artizen is IEncryptionClient, ReentrancyGuard, PullPayment {
 
         emit LicenseBought(msg.sender, cipherId, licenseType, price, requestId);
         return requestId;
+    }
+
+    function calculateShare(uint256 percentage, uint256 amount)
+        public
+        pure
+        returns (uint256)
+    {
+        return (percentage * amount) / 100;
     }
 
     /// @inheritdoc IEncryptionClient

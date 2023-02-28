@@ -1,6 +1,7 @@
+import { ToastOptions } from "react-hot-toast";
 import { Address, Chain } from "wagmi";
 
-export enum LICENSE_TYPES {
+export enum LICENSE_TYPE {
   BASIC,
   PREMIUM,
 }
@@ -36,6 +37,19 @@ type Config = {
 };
 
 export const config: Config = {
-  appContractAddress: "0x9E4D195a206e43950337fF4044eDfF2e77f78354", // Artizen.sol on hyperspace
+  appContractAddress: "0xf2037D313eDC9238ABa59DAdb16869b93d579173", // Artizen.sol on hyperspace
   oracleContractAddress: "0xb0dd3eb2374b21b6efacf41a16e25ed8114734e0",
+};
+
+export const styledToast: ToastOptions = {
+  style: {
+    border: "1px solid #30FFB4",
+    padding: "16px",
+    color: "#30FFB4",
+    backgroundColor: "#0B0B0F",
+  },
+  iconTheme: {
+    primary: "#30FFB4",
+    secondary: "#16161A",
+  },
 };

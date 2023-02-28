@@ -30,7 +30,9 @@ const Upload: NextPageWithLayout = () => {
   const handleDescriptionChange = (
     e: React.ChangeEvent<HTMLTextAreaElement>
   ) => {
-    setDescription(e.target.value);
+    const value = e.target.value;
+    console.log(value);
+    setDescription(value);
   };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {

@@ -9,6 +9,12 @@ import { useState } from "react";
 import axios from "axios";
 import useSWR, { Fetcher } from "swr";
 import { useRouter } from "next/router";
+import ContentModal from "@/components/Explore/contentModal";
+import useIsMounted from "@/hooks/useIsMounted";
+import EventsStreamer from "@/components/eventsStream";
+import useGlobalStore from "@/store/globalStore";
+import { BigNumber } from "ethers";
+import { useAccount } from "wagmi";
 
 const fetcher: Fetcher<FetchedContentRecord[]> = async (url: string) => {
   const { data } = await axios.get(url);
@@ -20,11 +26,13 @@ const ContentPage = ({
   search,
   newLimit,
   isLast,
+  expandContent,
 }: {
   index?: number;
   search?: string;
   newLimit: () => void;
   isLast: boolean;
+  expandContent: (content: FetchedContentRecord) => void;
 }) => {
   const { data, error, isLoading } = useSWR<FetchedContentRecord[]>(
     `/api/explore?page=${index}` + (search ? `&search=${search}` : ``),
@@ -40,6 +48,7 @@ const ContentPage = ({
           newLimit={newLimit}
           key={item.id}
           content={item}
+          onClick={() => expandContent(item)}
         />
       ))}
     </>
@@ -52,11 +61,23 @@ interface ExplorePageQuery {
 }
 
 const ExplorePage: NextPageWithLayout = () => {
+  const isMounted = useIsMounted();
   const { query } = useRouter();
   const { search, page: pageQuery }: ExplorePageQuery = query;
   const [page, setPage] = useState(pageQuery || 1);
+  const [selectedContent, setSelectedContent] =
+    useState<FetchedContentRecord>();
+
+  const { address } = useAccount();
+  const licenses = useGlobalStore((state) => state.licenses);
+
   const newLimit = () => setPage((prev) => prev + 1);
   const pages = [];
+
+  const handleContentSelection = (content: FetchedContentRecord) => {
+    setSelectedContent(content);
+  };
+
   for (let i = 1; i <= page; i++) {
     pages.push(
       <ContentPage
@@ -65,11 +86,14 @@ const ExplorePage: NextPageWithLayout = () => {
         isLast={i === page}
         key={i}
         search={search as string}
+        expandContent={handleContentSelection}
       />
     );
   }
+  if (!isMounted) return null;
   return (
     <>
+      <EventsStreamer />
       <Head>
         <title>Explore photos, videos</title>
       </Head>
@@ -82,6 +106,16 @@ const ExplorePage: NextPageWithLayout = () => {
         </div>
         <MasonryLayout>{pages}</MasonryLayout>
       </main>
+      {selectedContent && (
+        <ContentModal
+          content={selectedContent}
+          license={licenses.find(
+            (license) =>
+              license.licensee === address &&
+              license.contentId.eq(BigNumber.from(selectedContent.cipherId!))
+          )}
+        />
+      )}
     </>
   );
 };

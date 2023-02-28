@@ -16,7 +16,7 @@ export default async function handler(
     const xata = getXataClient();
     const data = await xata.db.content.create({
       rootCid: content.cid,
-      description: "",
+      description: content.description,
       ownerAddress,
       createdAt: new Date().toISOString(),
       preview_url: content.preview_url,

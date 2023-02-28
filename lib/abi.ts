@@ -1,4 +1,4 @@
-const contractABI = [
+const contractAbi = <const>[
   {
     inputs: [
       {
@@ -453,4 +453,4 @@ const contractABI = [
   },
 ];
 
-export default contractABI;
+export default contractAbi;
