@@ -104,7 +104,7 @@ const ContentModal = ({ content, license }: ContentModalProps) => {
             <a
               href={`/api/imageProxy?imageUrl=${preview_url!}`}
               download={`artizen-${rootCid ?? cipherId}`}
-              className="btn-secondary btn"
+              className="btn-secondary btn text-sm lg:text-base"
             >
               Free Download
             </a>
@@ -116,9 +116,9 @@ const ContentModal = ({ content, license }: ContentModalProps) => {
                 <button
                   onClick={() => buyLicense(LICENSE_TYPE.BASIC)}
                   type="button"
-                  className="btn btn-primary"
+                  className="btn btn-primary text-sm lg:text-base"
                 >
-                  Get Premium Access
+                  Buy Premium
                 </button>
               )}
             </div>
