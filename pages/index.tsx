@@ -30,7 +30,7 @@ const Home: NextPageWithLayout = () => {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <main className="mt-12">
+      <main className="mt-3 lg:mt-12">
         <section>
           <div className="flex justify-center">
             <KeySVG />
@@ -38,10 +38,10 @@ const Home: NextPageWithLayout = () => {
               Now in Private Beta
             </h3>
           </div>
-          <h3 className="font-bold hero-text-2 max-w-[882.78px] text-center lg:text-[54px] xl:text-[64.54px] leading-[60.24px] lg:h-[160px] mt-[30px] mx-auto">
+          <h3 className="font-bold hero-text-2 max-w-[882.78px] text-center text-3xl lg:text-[54px] xl:text-[64.54px] lg:leading-[60.24px] lg:h-[160px] mt-8 lg:mt-[30px] mx-auto">
             {"From inspiration to execution, we’ve got you covered."}
           </h3>
-          <p className="text-white max-w-[504px] text-center text-xl mx-auto">
+          <p className="text-white max-w-[504px] text-center text-sm mt-6 lg:mt-0 lg:text-xl mx-auto">
             {
               "Collaborate, share, and monetize your work. With everything you need in one place, it’s time to create your best work "
             }
@@ -49,13 +49,26 @@ const Home: NextPageWithLayout = () => {
           </p>
         </section>
         <Search />
+        <div className="relative md:hidden flex-1 h-[280px] mb-12">
+          <Image
+            src={footerSprite.src}
+            fill
+            className="object-scale-down"
+            alt="footer image"
+          />
+        </div>
         <section className="flex items-center text-[#606060] justify-between">
           <ul className="flex items-center justify-center flex-1 font-bold uppercase">
             <li className="pr-2">Twitter</li>
             <li className="pl-2 border-l border-[#606060]">Linkedin</li>
           </ul>
-          <div className="relative flex-1 h-[443px] w-[567px]">
-            <Image src={footerSprite.src} fill alt="footer image" />
+          <div className="relative hidden md:inline-flex flex-1 h-[443px] w-[567px]">
+            <Image
+              src={footerSprite.src}
+              fill
+              className="object-scale-down"
+              alt="footer image"
+            />
           </div>
           <ul className="flex items-center justify-center flex-1 font-bold uppercase">
             <li>privacy policy</li>

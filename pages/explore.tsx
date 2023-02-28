@@ -99,7 +99,7 @@ const ExplorePage: NextPageWithLayout = () => {
       </Head>
       <main className="space-y-14">
         <div className="space-y-8">
-          <h3 className="font-bold hero-text-2 text-[40px] leading-[60.24px] w-fit mx-auto">
+          <h3 className="font-bold hero-text-2 text-center text-3xl lg:text-[40px] lg:leading-[60.24px] w-fit mx-auto">
             Explore community curated content
           </h3>
           <Search center={true} defaultValue={search} />

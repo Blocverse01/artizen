@@ -33,22 +33,22 @@ export default function Search({
   };
   return (
     <section
-      className={`mt-[45px] ${
+      className={`mt-14 lg:mt-[45px] ${
         center ? "mx-auto max-w-[873px]" : "max-w-[900px]"
       }`}
     >
       <form
         onSubmit={handleSearch}
-        className="rounded-[14px] pl-[35px] bg-app-alt-dark py-3 pr-4 flex items-center"
+        className="rounded-[14px] pl-4 lg:pl-[35px] bg-app-alt-dark py-3 pr-4 flex items-center"
       >
         <input
           name="search"
           aria-label="We are strong"
-          className="border-none w-full bg-transparent text-white outline-none placeholder-[#5B5B69] mr-5"
+          className="border-none w-full bg-transparent text-white outline-none placeholder-[#5B5B69] lg:mr-5 mr-4"
           type="search"
           onChange={handleChange}
           value={search}
-          placeholder="Search for images, videos, or audios"
+          placeholder="Search for images, videos, or audio"
         />
         <button
           type="submit"

@@ -100,7 +100,7 @@ const ContentModal = ({ content, license }: ContentModalProps) => {
           >
             ✕
           </label>
-          <div className="flex lg:px-5 lg:py-2 space-x-8">
+          <div className="flex pt-6 lg:pt-0 lg:px-5 lg:py-2 space-x-5 lg:space-x-8">
             <a
               href={`/api/imageProxy?imageUrl=${preview_url!}`}
               download={`artizen-${rootCid ?? cipherId}`}
@@ -123,7 +123,7 @@ const ContentModal = ({ content, license }: ContentModalProps) => {
               )}
             </div>
           </div>
-          <div className="flex items-center h-[84%] w-[100%] mx-auto mt-8">
+          <div className="flex items-center h-[80%] lg:h-[84%] w-[100%] mx-auto mt-8">
             <section className="relative h-full w-full">
               <Image
                 src={`/api/imageProxy?imageUrl=${preview_url!}`}
