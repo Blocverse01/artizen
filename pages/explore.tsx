@@ -15,6 +15,7 @@ import EventsStreamer from "@/components/eventsStream";
 import useGlobalStore from "@/store/globalStore";
 import { BigNumber } from "ethers";
 import { useAccount } from "wagmi";
+import { PropagateLoader } from "react-spinners";
 
 const fetcher: Fetcher<FetchedContentRecord[]> = async (url: string) => {
   const { data } = await axios.get(url);
@@ -38,8 +39,22 @@ const ContentPage = ({
     `/api/explore?page=${index}` + (search ? `&search=${search}` : ``),
     fetcher
   );
-  if (error) return <div>failed to load</div>;
-  if (isLoading || !data) return <></>;
+  if (error)
+    return (
+      <>
+        <div className="absolute bottom-0 text-lg text-slate-300 left-0 right-0 h-fit flex justify-center">
+          ⚠️ Error loading content
+        </div>
+      </>
+    );
+  if (isLoading || !data)
+    return (
+      <>
+        <div className="absolute bottom-0 left-0 right-0 h-fit flex justify-center">
+          <PropagateLoader color="#30FFB4" />
+        </div>
+      </>
+    );
   return (
     <>
       {data.map((item: FetchedContentRecord, i) => (

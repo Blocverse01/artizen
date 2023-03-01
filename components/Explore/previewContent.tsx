@@ -3,6 +3,7 @@ import { FetchedContentRecord } from "@/lib/types";
 import Image from "next/image";
 import { useRef } from "react";
 import BlurImage from "./blurImage";
+import { motion } from "framer-motion";
 
 type PreviewContentProps = {
   content: FetchedContentRecord;
@@ -26,10 +27,32 @@ const PreviewContent = ({
 
   useObserver(ref, isLast, newLimit);
 
+  const variants = {
+    hidden: { opacity: 0 },
+    visible: { opacity: 1 },
+  };
+  const whileHover = {
+    scale: 1.1,
+    transition: { duration: 0.2 },
+  };
+  const whileTap = {
+    scale: 0.9,
+    transition: { duration: 0.2 },
+  };
+
   return (
     <>
       {isImage && (
-        <label htmlFor="content-modal" className="block cursor-pointer" onClick={onClick}>
+        <motion.label
+          variants={variants}
+          initial="hidden"
+          animate="visible"
+          whileHover={whileHover}
+          whileTap={whileTap}
+          htmlFor="content-modal"
+          className="block cursor-pointer"
+          onClick={onClick}
+        >
           <Image
             ref={ref}
             src={`/api/imageProxy?imageUrl=${previewUrl}`}
@@ -38,9 +61,10 @@ const PreviewContent = ({
             height={height!}
             width={width!}
             blurDataURL={BlurImage}
+            placeholder="blur"
           />
           {""}
-        </label>
+        </motion.label>
       )}
     </>
   );
