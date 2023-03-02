@@ -43,7 +43,7 @@ const EventsStreamer: FC = () => {
     },
   });
 
-  const medusaFans = useContract({
+  const artizenContract = useContract({
     address: config.appContractAddress,
     abi: CONTRACT_ABI,
     signerOrProvider: provider,
@@ -53,7 +53,7 @@ const EventsStreamer: FC = () => {
     const getEventsForFilter = async (
       filter: ethers.EventFilter
     ): Promise<ethers.Event[]> => {
-      const events = await medusaFans!.queryFilter(filter, 100000);
+      const events = await artizenContract!.queryFilter(filter, 100000);
       console.log(events);
       return events
         .reverse()
@@ -73,7 +73,7 @@ const EventsStreamer: FC = () => {
       const iface = new ethers.utils.Interface(CONTRACT_ABI);
 
       const newLicenses = await getEventsForFilter(
-        medusaFans!.filters.LicenseBought(address!, null, null, null, null)
+        artizenContract!.filters.LicenseBought(address!, null, null, null, null)
       );
       const licenses = newLicenses.map((filterTopic: ethers.Event) => {
         const result = iface.parseLog(filterTopic);
@@ -90,7 +90,7 @@ const EventsStreamer: FC = () => {
       updateLicenses(licenses);
 
       const contentDecryptions = await getEventsForFilter(
-        medusaFans!.filters.ContentDecryption(null, null)
+        artizenContract!.filters.ContentDecryption(null, null)
       );
       console.log(contentDecryptions);
       const decryptions = contentDecryptions.map(
@@ -106,7 +106,7 @@ const EventsStreamer: FC = () => {
       );
       updateDecryptions(decryptions);
     };
-    if (medusaFans) {
+    if (artizenContract) {
       getEvents();
     }
 
