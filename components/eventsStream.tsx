@@ -2,13 +2,10 @@ import { FC, useEffect } from "react";
 import { useAccount, useContract, useContractEvent, useProvider } from "wagmi";
 import { LICENSE_TYPE, config } from "@/lib/constants";
 import CONTRACT_ABI from "@/lib/abi";
-import useGlobalStore from "@/store/globalStore";
+import useGlobalStore, { Decryption } from "@/store/globalStore";
 import { BigNumber, ethers } from "ethers";
 import { HGamalEVMCipher as Ciphertext } from "@medusa-network/medusa-sdk";
-import {
-  ContentDecryptionEventObject,
-  LicenseBoughtEventObject,
-} from "@/typechain/Artizen";
+import { LicenseBoughtEventObject } from "@/typechain/Artizen";
 
 const EventsStreamer: FC = () => {
   const provider = useProvider();
@@ -42,7 +39,7 @@ const EventsStreamer: FC = () => {
     abi: CONTRACT_ABI,
     eventName: "ContentDecryption",
     listener(requestId: BigNumber, cipher: Ciphertext) {
-      addDecryption({ requestId, cipher: cipher as any });
+      addDecryption({ requestId, ciphertext: cipher });
     },
   });
 
@@ -100,7 +97,11 @@ const EventsStreamer: FC = () => {
         (filterTopic: ethers.Event) => {
           const result = iface.parseLog(filterTopic);
           const { requestId, cipher } = result.args;
-          return { requestId, cipher } as ContentDecryptionEventObject;
+          console.log(result.args["1"]);
+          return {
+            requestId: requestId ?? result.args["0"],
+            ciphertext: cipher ?? result.args["1"],
+          } satisfies Decryption;
         }
       );
       updateDecryptions(decryptions);

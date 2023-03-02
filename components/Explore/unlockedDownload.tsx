@@ -47,17 +47,23 @@ const UnlockedContentDownload: React.FC<UnlockedContent> = ({
       });
       medusa = (await signMessage())!;
     }
-    const { cipher } = decryption;
+    const { ciphertext, requestId } = decryption;
     const response = await fetch(content.encrypted_url!);
     const encryptedContent = Base64.toUint8Array(await response.text());
     try {
-      const decryptedBytes = await medusa.decrypt(cipher, encryptedContent);
+      console.log(ciphertext, requestId);
+      const decryptedBytes = await medusa.decrypt(ciphertext, encryptedContent);
       const msg = new TextDecoder().decode(decryptedBytes);
       const fileData = msg.split(",")[1];
       setDownloadLink(
         window.URL.createObjectURL(new Blob([Base64.toUint8Array(fileData)]))
       );
     } catch (error: any) {
+      toast.error("Couldn't decrypt", {
+        ...styledToast,
+        id: toastId,
+      });
+      console.log(error);
       console.log("Couldn't decrypt");
     }
   };

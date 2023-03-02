@@ -1,9 +1,17 @@
-import create from "zustand";
-import { SecretKey, PublicKey, Medusa } from "@medusa-network/medusa-sdk";
+import { create } from "zustand";
 import {
-  ContentDecryptionEventObject,
-  LicenseBoughtEventObject,
-} from "@/typechain/Artizen";
+  SecretKey,
+  PublicKey,
+  Medusa,
+  HGamalEVMCipher as Ciphertext,
+} from "@medusa-network/medusa-sdk";
+import { LicenseBoughtEventObject } from "@/typechain/Artizen";
+import { BigNumber } from "ethers";
+
+export interface Decryption {
+  requestId: BigNumber;
+  ciphertext: Ciphertext;
+}
 
 interface GlobalState {
   medusa: Medusa<SecretKey, PublicKey<SecretKey>> | null;
@@ -12,11 +20,11 @@ interface GlobalState {
     medusa: Medusa<SecretKey, PublicKey<SecretKey>> | null
   ) => void;
   licenses: LicenseBoughtEventObject[];
-  decryptions: ContentDecryptionEventObject[];
+  decryptions: Decryption[];
   updateLicenses: (licenses: LicenseBoughtEventObject[]) => void;
-  updateDecryptions: (decryptions: ContentDecryptionEventObject[]) => void;
+  updateDecryptions: (decryptions: Decryption[]) => void;
   addLicense: (license: LicenseBoughtEventObject) => void;
-  addDecryption: (decryption: ContentDecryptionEventObject) => void;
+  addDecryption: (decryption: Decryption) => void;
 }
 
 const useGlobalStore = create<GlobalState>()((set) => ({
@@ -29,7 +37,7 @@ const useGlobalStore = create<GlobalState>()((set) => ({
     set((state) => ({ medusa })),
   updateLicenses: (licenses: LicenseBoughtEventObject[]) =>
     set((state) => ({ licenses })),
-  updateDecryptions: (decryptions: ContentDecryptionEventObject[]) =>
+  updateDecryptions: (decryptions: Decryption[]) =>
     set((state) => ({ decryptions })),
 
   addLicense: (license: LicenseBoughtEventObject) =>
@@ -39,7 +47,7 @@ const useGlobalStore = create<GlobalState>()((set) => ({
       }
       return { licenses };
     }),
-  addDecryption: (decryption: ContentDecryptionEventObject) =>
+  addDecryption: (decryption: Decryption) =>
     set(({ decryptions }) => {
       if (!decryptions.find((d) => d.requestId === decryption.requestId)) {
         return { decryptions: [decryption, ...decryptions] };
