@@ -53,7 +53,7 @@ const EventsStreamer: FC = () => {
     const getEventsForFilter = async (
       filter: ethers.EventFilter
     ): Promise<ethers.Event[]> => {
-      const events = await artizenContract!.queryFilter(filter, 100000);
+      const events = await artizenContract!.queryFilter(filter, 120000);
       console.log(events);
       return events
         .reverse()
@@ -77,8 +77,7 @@ const EventsStreamer: FC = () => {
       );
       const licenses = newLicenses.map((filterTopic: ethers.Event) => {
         const result = iface.parseLog(filterTopic);
-        const { licensee, contentId, licenseType, price, requestId } =
-          result.args;
+        const { licensee, contentId, licenseType, price, requestId } = result.args;
         return {
           licensee,
           contentId,
@@ -93,17 +92,15 @@ const EventsStreamer: FC = () => {
         artizenContract!.filters.ContentDecryption(null, null)
       );
       console.log(contentDecryptions);
-      const decryptions = contentDecryptions.map(
-        (filterTopic: ethers.Event) => {
-          const result = iface.parseLog(filterTopic);
-          const { requestId, cipher } = result.args;
-          console.log(result.args["1"]);
-          return {
-            requestId: requestId ?? result.args["0"],
-            ciphertext: cipher ?? result.args["1"],
-          } satisfies Decryption;
-        }
-      );
+      const decryptions = contentDecryptions.map((filterTopic: ethers.Event) => {
+        const result = iface.parseLog(filterTopic);
+        const { requestId, cipher } = result.args;
+        console.log(result.args["1"]);
+        return {
+          requestId: requestId ?? result.args["0"],
+          ciphertext: cipher ?? result.args["1"],
+        } satisfies Decryption;
+      });
       updateDecryptions(decryptions);
     };
     if (artizenContract) {

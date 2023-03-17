@@ -22,11 +22,7 @@ class Watermark {
     // correctly watermark at the center of the image
     const textWidth = ctx.measureText(text).width;
     const textHeight = parseInt(ctx.font, 10);
-    ctx.fillText(
-      text,
-      img.width / 2 - textWidth / 2,
-      img.height / 2 + textHeight / 2
-    );
+    ctx.fillText(text, img.width / 2 - textWidth / 2, img.height / 2 + textHeight / 2);
     canvas.toBlob(
       (blob) => {
         if (!blob) {
@@ -40,10 +36,7 @@ class Watermark {
     );
   };
 
-  withCompressorJs = (
-    photo: File,
-    callback: (watermarkedPhoto: Blob) => void
-  ) => {
+  withCompressorJs = (photo: File, callback: (watermarkedPhoto: string) => void) => {
     const _ = new Compressor(photo, {
       quality: 0.6,
       drew: (ctx, canvas) => {
@@ -58,7 +51,11 @@ class Watermark {
         );
       },
       success: (result: Blob) => {
-        callback(result);
+        const reader = new FileReader();
+        reader.readAsDataURL(result);
+        reader.onload = () => {
+          callback(reader.result as string);
+        };
       },
     });
   };

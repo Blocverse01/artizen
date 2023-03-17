@@ -44,8 +44,10 @@ interface IEncryptionClient {
     /// @dev Implement in client contracts of medusa
     /// @param requestId The id of the original request
     /// @param _cipher the reencryption result
-    function oracleResult(uint256 requestId, Ciphertext calldata _cipher)
-        external;
+    function oracleResult(
+        uint256 requestId,
+        Ciphertext calldata _cipher
+    ) external;
 }
 
 interface IEncryptionOracle {
@@ -63,9 +65,10 @@ interface IEncryptionOracle {
     /// @param _cipherId the id of the ciphertext to reencrypt
     /// @param _publicKey the public key of the recipient
     /// @return the reencryption request id
-    function requestReencryption(uint256 _cipherId, G1Point calldata _publicKey)
-        external
-        returns (uint256);
+    function requestReencryption(
+        uint256 _cipherId,
+        G1Point calldata _publicKey
+    ) external returns (uint256);
 
     function distributedKey() external view returns (G1Point memory);
 }
@@ -99,10 +102,7 @@ contract Artizen is IEncryptionClient, ReentrancyGuard, PullPayment {
         uint256 price,
         uint256 requestId
     );
-    event ContentDecryption(
-        uint256 indexed requestId,
-        Ciphertext indexed cipher
-    );
+    event ContentDecryption(uint256 indexed requestId, Ciphertext cipher);
 
     modifier onlyOracle() {
         if (msg.sender != address(oracle)) {
@@ -115,11 +115,10 @@ contract Artizen is IEncryptionClient, ReentrancyGuard, PullPayment {
         oracle = IEncryptionOracle(_oracle);
     }
 
-    function contribute(Ciphertext calldata cipher, string calldata uri)
-        public
-        nonReentrant
-        returns (uint256)
-    {
+    function contribute(
+        Ciphertext calldata cipher,
+        string calldata uri
+    ) public nonReentrant returns (uint256) {
         //TODO check if msg.sender is an authorized contributor
         uint256 cipherId = oracle.submitCiphertext(
             cipher,
@@ -169,19 +168,18 @@ contract Artizen is IEncryptionClient, ReentrancyGuard, PullPayment {
         return requestId;
     }
 
-    function calculateShare(uint256 percentage, uint256 amount)
-        public
-        pure
-        returns (uint256)
-    {
+    function calculateShare(
+        uint256 percentage,
+        uint256 amount
+    ) public pure returns (uint256) {
         return (percentage * amount) / 100;
     }
 
     /// @inheritdoc IEncryptionClient
-    function oracleResult(uint256 requestId, Ciphertext calldata cipher)
-        external
-        onlyOracle
-    {
+    function oracleResult(
+        uint256 requestId,
+        Ciphertext calldata cipher
+    ) external onlyOracle {
         emit ContentDecryption(requestId, cipher);
     }
 }

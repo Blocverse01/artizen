@@ -37,7 +37,7 @@ type Config = {
 };
 
 export const config: Config = {
-  appContractAddress: "0xf2037D313eDC9238ABa59DAdb16869b93d579173", // Artizen.sol on hyperspace
+  appContractAddress: "0xDb10792bD12C3480Bf5b8c2f51fd3F8eb79d5aBa", // Artizen.sol on hyperspace
   oracleContractAddress: "0xb0dd3eb2374b21b6efacf41a16e25ed8114734e0",
 };
 

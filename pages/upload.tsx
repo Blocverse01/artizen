@@ -16,6 +16,7 @@ import { Artizen__factory } from "@/typechain";
 import { BigNumber } from "ethers";
 import { toast } from "react-hot-toast";
 import useMedusaAuth from "@/hooks/useMedusaAuth";
+import { uploadFiles } from "@/lib/uploadFiles";
 
 const Upload: NextPageWithLayout = () => {
   const [photo, setPhoto] = useState<File>();
@@ -28,9 +29,7 @@ const Upload: NextPageWithLayout = () => {
 
   const stateMedusa = useGlobalStore((state) => state.medusa);
 
-  const handleDescriptionChange = (
-    e: React.ChangeEvent<HTMLTextAreaElement>
-  ) => {
+  const handleDescriptionChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const value = e.target.value;
     console.log(value);
     setDescription(value);
@@ -55,37 +54,22 @@ const Upload: NextPageWithLayout = () => {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     let medusa = stateMedusa;
-    const toastId = "add-content";
+    const toastOptions = { id: "add-content", ...styledToast };
 
     if (!photo) {
-      return toast("Add a photo", {
-        icon: "🔔",
-        ...styledToast,
-        id: toastId,
-      });
+      return toast("Add a photo", toastOptions);
     }
 
-    if (!isConnected || !signer)
-      return toast("Connect your wallet", {
-        icon: "🔔",
-        ...styledToast,
-        id: toastId,
-      });
+    if (!isConnected || !signer) return toast("Connect your wallet", toastOptions);
 
     if (!medusa) {
-      toast.loading("Authorizing medusa", {
-        ...styledToast,
-        id: toastId,
-      });
+      toast.loading("Authorizing medusa", toastOptions);
       medusa = (await signMessage())!;
     }
 
     try {
       setProcessing(true);
-      toast.loading("Encrypting", {
-        ...styledToast,
-        id: toastId,
-      });
+      toast.loading("Encrypting", toastOptions);
       const buff = new TextEncoder().encode(fileText);
       const { encryptedData, encryptedKey } = await medusa.encrypt(
         buff,
@@ -99,17 +83,22 @@ const Upload: NextPageWithLayout = () => {
             width: img.width,
             height: img.height,
           };
-          toast.loading("Uploading", {
-            ...styledToast,
-            id: toastId,
-          });
+          toast.loading("Uploading", toastOptions);
           const filename = nanoid();
           const ext = photo.type.split("/")[1];
           const previewPath = `artizen_${filename}_preview.${ext}`;
           const encryptedPath = `artizen_${filename}_encrypted`;
-          const cid = await storage.store([
-            new File([watermarkedPhoto], previewPath),
-            new File([b64EncryptedData], encryptedPath, { type: "text/plain" }),
+          const cid = await uploadFiles([
+            {
+              name: previewPath,
+              dataUrl: watermarkedPhoto,
+              type: photo.type,
+            },
+            {
+              name: encryptedPath,
+              text: b64EncryptedData,
+              type: "text/plain",
+            },
           ]);
           const uploaded = {
             cid,
@@ -120,18 +109,12 @@ const Upload: NextPageWithLayout = () => {
             config.appContractAddress,
             signer
           );
-          toast.loading("Listing your content", {
-            ...styledToast,
-            id: toastId,
-          });
+          toast.loading("Listing your content", toastOptions);
           const transaction = await artizenContract.contribute(
             encryptedKey,
             uploaded.encrypted_url
           );
-          toast.loading("Waiting on FVM", {
-            ...styledToast,
-            id: toastId,
-          });
+          toast.loading("Waiting on FVM", toastOptions);
           const receipt = await transaction.wait();
           const cipherID = receipt?.events![1]?.args!.contentId as BigNumber;
           const { data, status } = await axios.post("/api/add-content", {
@@ -146,19 +129,17 @@ const Upload: NextPageWithLayout = () => {
           console.log(data);
           setProcessing(false);
           if (status === 201) {
-            toast.success("Content Listed successfully", {
-              ...styledToast,
-              id: toastId,
-            });
+            toast.success("Content Listed successfully", toastOptions);
             Router.push("/explore");
           }
         } catch (error) {
-          console.log(error);
           setProcessing(false);
+          toast.error("Content listing failed", toastOptions);
         }
       });
     } catch (error: any) {
       setProcessing(false);
+      toast.error("Content listing failed", toastOptions);
       console.log(error);
     }
   };
@@ -200,10 +181,7 @@ const Upload: NextPageWithLayout = () => {
           </div>
         )}
         <div className="my-6">
-          <label
-            className="text-slate-200 mb-2 block text-lg"
-            htmlFor="description"
-          >
+          <label className="text-slate-200 mb-2 block text-lg" htmlFor="description">
             Description
           </label>
           <textarea

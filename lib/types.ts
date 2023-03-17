@@ -25,3 +25,18 @@ export interface AddContentRequestBody {
   content: UploadedContent;
   ownerAddress: Address;
 }
+
+export interface FileToUpload {
+  name: string;
+  text?: string;
+  type: string;
+  dataUrl?: string;
+}
+
+export interface UploadFilesRequestBody {
+  files: FileToUpload[];
+}
+
+export interface UploadFilesResponseData {
+  cid: string;
+}

@@ -2,171 +2,6 @@ const contractAbi = <const>[
   {
     inputs: [
       {
-        internalType: "address",
-        name: "_oracle",
-        type: "address",
-      },
-    ],
-    stateMutability: "nonpayable",
-    type: "constructor",
-  },
-  {
-    inputs: [],
-    name: "CallbackNotAuthorized",
-    type: "error",
-  },
-  {
-    inputs: [],
-    name: "InsufficentFunds",
-    type: "error",
-  },
-  {
-    inputs: [],
-    name: "InvalidContent",
-    type: "error",
-  },
-  {
-    anonymous: false,
-    inputs: [
-      {
-        indexed: true,
-        internalType: "uint256",
-        name: "requestId",
-        type: "uint256",
-      },
-      {
-        components: [
-          {
-            components: [
-              {
-                internalType: "uint256",
-                name: "x",
-                type: "uint256",
-              },
-              {
-                internalType: "uint256",
-                name: "y",
-                type: "uint256",
-              },
-            ],
-            internalType: "struct G1Point",
-            name: "random",
-            type: "tuple",
-          },
-          {
-            internalType: "uint256",
-            name: "cipher",
-            type: "uint256",
-          },
-          {
-            components: [
-              {
-                internalType: "uint256",
-                name: "x",
-                type: "uint256",
-              },
-              {
-                internalType: "uint256",
-                name: "y",
-                type: "uint256",
-              },
-            ],
-            internalType: "struct G1Point",
-            name: "random2",
-            type: "tuple",
-          },
-          {
-            components: [
-              {
-                internalType: "uint256",
-                name: "f",
-                type: "uint256",
-              },
-              {
-                internalType: "uint256",
-                name: "e",
-                type: "uint256",
-              },
-            ],
-            internalType: "struct DleqProof",
-            name: "dleq",
-            type: "tuple",
-          },
-        ],
-        indexed: true,
-        internalType: "struct Ciphertext",
-        name: "cipher",
-        type: "tuple",
-      },
-    ],
-    name: "ContentDecryption",
-    type: "event",
-  },
-  {
-    anonymous: false,
-    inputs: [
-      {
-        indexed: true,
-        internalType: "address",
-        name: "licensee",
-        type: "address",
-      },
-      {
-        indexed: true,
-        internalType: "uint256",
-        name: "contentId",
-        type: "uint256",
-      },
-      {
-        indexed: false,
-        internalType: "enum LicenseType",
-        name: "licenseType",
-        type: "uint8",
-      },
-      {
-        indexed: false,
-        internalType: "uint256",
-        name: "price",
-        type: "uint256",
-      },
-      {
-        indexed: false,
-        internalType: "uint256",
-        name: "requestId",
-        type: "uint256",
-      },
-    ],
-    name: "LicenseBought",
-    type: "event",
-  },
-  {
-    anonymous: false,
-    inputs: [
-      {
-        indexed: true,
-        internalType: "address",
-        name: "contributor",
-        type: "address",
-      },
-      {
-        indexed: true,
-        internalType: "uint256",
-        name: "contentId",
-        type: "uint256",
-      },
-      {
-        indexed: false,
-        internalType: "string",
-        name: "uri",
-        type: "string",
-      },
-    ],
-    name: "NewContribution",
-    type: "event",
-  },
-  {
-    inputs: [
-      {
         internalType: "uint256",
         name: "cipherId",
         type: "uint256",
@@ -204,6 +39,22 @@ const contractAbi = <const>[
     ],
     stateMutability: "payable",
     type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "_oracle",
+        type: "address",
+      },
+    ],
+    stateMutability: "nonpayable",
+    type: "constructor",
+  },
+  {
+    inputs: [],
+    name: "CallbackNotAuthorized",
+    type: "error",
   },
   {
     inputs: [
@@ -288,60 +139,153 @@ const contractAbi = <const>[
     type: "function",
   },
   {
+    inputs: [],
+    name: "InsufficentFunds",
+    type: "error",
+  },
+  {
+    inputs: [],
+    name: "InvalidContent",
+    type: "error",
+  },
+  {
+    anonymous: false,
     inputs: [
       {
+        indexed: true,
         internalType: "uint256",
-        name: "",
+        name: "requestId",
+        type: "uint256",
+      },
+      {
+        components: [
+          {
+            components: [
+              {
+                internalType: "uint256",
+                name: "x",
+                type: "uint256",
+              },
+              {
+                internalType: "uint256",
+                name: "y",
+                type: "uint256",
+              },
+            ],
+            internalType: "struct G1Point",
+            name: "random",
+            type: "tuple",
+          },
+          {
+            internalType: "uint256",
+            name: "cipher",
+            type: "uint256",
+          },
+          {
+            components: [
+              {
+                internalType: "uint256",
+                name: "x",
+                type: "uint256",
+              },
+              {
+                internalType: "uint256",
+                name: "y",
+                type: "uint256",
+              },
+            ],
+            internalType: "struct G1Point",
+            name: "random2",
+            type: "tuple",
+          },
+          {
+            components: [
+              {
+                internalType: "uint256",
+                name: "f",
+                type: "uint256",
+              },
+              {
+                internalType: "uint256",
+                name: "e",
+                type: "uint256",
+              },
+            ],
+            internalType: "struct DleqProof",
+            name: "dleq",
+            type: "tuple",
+          },
+        ],
+        indexed: false,
+        internalType: "struct Ciphertext",
+        name: "cipher",
+        type: "tuple",
+      },
+    ],
+    name: "ContentDecryption",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: true,
+        internalType: "address",
+        name: "licensee",
+        type: "address",
+      },
+      {
+        indexed: true,
+        internalType: "uint256",
+        name: "contentId",
+        type: "uint256",
+      },
+      {
+        indexed: false,
+        internalType: "enum LicenseType",
+        name: "licenseType",
+        type: "uint8",
+      },
+      {
+        indexed: false,
+        internalType: "uint256",
+        name: "price",
+        type: "uint256",
+      },
+      {
+        indexed: false,
+        internalType: "uint256",
+        name: "requestId",
         type: "uint256",
       },
     ],
-    name: "contributions",
-    outputs: [
+    name: "LicenseBought",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
       {
+        indexed: true,
         internalType: "address",
         name: "contributor",
         type: "address",
       },
       {
+        indexed: true,
+        internalType: "uint256",
+        name: "contentId",
+        type: "uint256",
+      },
+      {
+        indexed: false,
         internalType: "string",
         name: "uri",
         type: "string",
       },
     ],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
-        internalType: "uint256",
-        name: "",
-        type: "uint256",
-      },
-    ],
-    name: "contributors",
-    outputs: [
-      {
-        internalType: "address",
-        name: "",
-        type: "address",
-      },
-    ],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [],
-    name: "oracle",
-    outputs: [
-      {
-        internalType: "contract IEncryptionOracle",
-        name: "",
-        type: "address",
-      },
-    ],
-    stateMutability: "view",
-    type: "function",
+    name: "NewContribution",
+    type: "event",
   },
   {
     inputs: [
@@ -422,6 +366,99 @@ const contractAbi = <const>[
   {
     inputs: [
       {
+        internalType: "address payable",
+        name: "payee",
+        type: "address",
+      },
+    ],
+    name: "withdrawPayments",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint256",
+        name: "percentage",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256",
+        name: "amount",
+        type: "uint256",
+      },
+    ],
+    name: "calculateShare",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+    ],
+    stateMutability: "pure",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+    ],
+    name: "contributions",
+    outputs: [
+      {
+        internalType: "address",
+        name: "contributor",
+        type: "address",
+      },
+      {
+        internalType: "string",
+        name: "uri",
+        type: "string",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+    ],
+    name: "contributors",
+    outputs: [
+      {
+        internalType: "address",
+        name: "",
+        type: "address",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "oracle",
+    outputs: [
+      {
+        internalType: "contract IEncryptionOracle",
+        name: "",
+        type: "address",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
         internalType: "address",
         name: "dest",
         type: "address",
@@ -436,19 +473,6 @@ const contractAbi = <const>[
       },
     ],
     stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
-        internalType: "address payable",
-        name: "payee",
-        type: "address",
-      },
-    ],
-    name: "withdrawPayments",
-    outputs: [],
-    stateMutability: "nonpayable",
     type: "function",
   },
 ];

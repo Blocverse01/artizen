@@ -13,10 +13,7 @@ interface UnlockedContent {
   license: LicenseBoughtEventObject;
 }
 
-const UnlockedContentDownload: React.FC<UnlockedContent> = ({
-  content,
-  license,
-}) => {
+const UnlockedContentDownload: React.FC<UnlockedContent> = ({ content, license }) => {
   const [downloadLink, setDownloadLink] = useState<string | null>(null);
 
   const stateMedusa = useGlobalStore((state) => state.medusa);
@@ -24,6 +21,10 @@ const UnlockedContentDownload: React.FC<UnlockedContent> = ({
   const decryptions = useGlobalStore((state) => state.decryptions);
   const decryption = decryptions.find((d) => d.requestId.eq(license.requestId));
   const { signMessage } = useMedusaAuth();
+  const { preview_url } = content;
+  const fileName = preview_url!.substring(preview_url!.lastIndexOf("/") + 1);
+  const fileExtension = fileName.substring(fileName.lastIndexOf(".") + 1);
+  const downloadName = `artizen-${crypto.randomUUID()}.${fileExtension}`;
 
   const prepareDownload = async () => {
     let medusa = stateMedusa;
@@ -40,6 +41,7 @@ const UnlockedContentDownload: React.FC<UnlockedContent> = ({
       });
     }
     const toastId = "prepare-download";
+    const toastOptions = { id: toastId, ...styledToast };
     if (!medusa) {
       toast.loading("Authorizing medusa", {
         ...styledToast,
@@ -58,6 +60,7 @@ const UnlockedContentDownload: React.FC<UnlockedContent> = ({
       setDownloadLink(
         window.URL.createObjectURL(new Blob([Base64.toUint8Array(fileData)]))
       );
+      toast.success("Download ready", toastOptions);
     } catch (error: any) {
       toast.error("Couldn't decrypt", {
         ...styledToast,
@@ -77,8 +80,8 @@ const UnlockedContentDownload: React.FC<UnlockedContent> = ({
       {downloadLink && (
         <a
           href={downloadLink}
-          className="btn bg-app-light border-app-dark"
-          download={`artizen-${content.cipherId}`}
+          className="btn bg-app-light text-app-alt-dark border-app-dark"
+          download={downloadName}
         >
           Download Premium
         </a>
