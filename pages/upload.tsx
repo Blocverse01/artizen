@@ -122,7 +122,7 @@ const Upload: NextPageWithLayout = () => {
           setProcessing(false);
           if (status === 201) {
             toast.success("Content Listed successfully", toastOptions);
-            //Router.push("/explore");
+            Router.push("/explore");
           }
         } catch (error) {
           setProcessing(false);

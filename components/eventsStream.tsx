@@ -53,7 +53,7 @@ const EventsStreamer: FC = () => {
     const getEventsForFilter = async (
       filter: ethers.EventFilter
     ): Promise<ethers.Event[]> => {
-      const events = await artizenContract!.queryFilter(filter, 120000);
+      const events = await artizenContract!.queryFilter(filter, 140000);
       console.log(events);
       return events
         .reverse()
