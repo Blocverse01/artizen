@@ -88,17 +88,9 @@ const Upload: NextPageWithLayout = () => {
           const ext = photo.type.split("/")[1];
           const previewPath = `artizen_${filename}_preview.${ext}`;
           const encryptedPath = `artizen_${filename}_encrypted`;
-          const cid = await uploadFiles([
-            {
-              name: previewPath,
-              dataUrl: watermarkedPhoto,
-              type: photo.type,
-            },
-            {
-              name: encryptedPath,
-              text: b64EncryptedData,
-              type: "text/plain",
-            },
+          const cid = await storage.store([
+            new File([watermarkedPhoto], previewPath),
+            new File([b64EncryptedData], encryptedPath, { type: "text/plain" }),
           ]);
           const uploaded = {
             cid,
@@ -130,7 +122,7 @@ const Upload: NextPageWithLayout = () => {
           setProcessing(false);
           if (status === 201) {
             toast.success("Content Listed successfully", toastOptions);
-            Router.push("/explore");
+            //Router.push("/explore");
           }
         } catch (error) {
           setProcessing(false);
