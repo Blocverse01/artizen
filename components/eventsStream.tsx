@@ -7,6 +7,8 @@ import { BigNumber, ethers } from "ethers";
 import { HGamalEVMCipher as Ciphertext } from "@medusa-network/medusa-sdk";
 import { LicenseBoughtEventObject } from "@/typechain/Artizen";
 
+const MAX_EPOCH_RANGE = 60480 as const;
+
 const EventsStreamer: FC = () => {
   const provider = useProvider();
   const { address } = useAccount();
@@ -49,12 +51,22 @@ const EventsStreamer: FC = () => {
     signerOrProvider: provider,
   });
 
+  const getSafeFromBlock = async () => {
+    const currentBlockNumber = await provider.getBlockNumber();
+    return currentBlockNumber - MAX_EPOCH_RANGE;
+  };
+
   useEffect(() => {
     const getEventsForFilter = async (
       filter: ethers.EventFilter
     ): Promise<ethers.Event[]> => {
-      const events = await artizenContract!.queryFilter(filter, 140000);
-      console.log(events);
+      let events: ethers.Event[] = [];
+      try {
+        const fromBlock = await getSafeFromBlock();
+        events = await artizenContract!.queryFilter(filter, fromBlock);
+      } catch (error) {
+        console.log(error);
+      }
       return events
         .reverse()
         .filter((event) => !event.removed)
